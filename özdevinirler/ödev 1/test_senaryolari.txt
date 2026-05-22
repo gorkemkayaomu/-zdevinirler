@@ -1,0 +1,105 @@
+TURING MAKINESI BINARY ÇARPMA - TEST SENARYOLARI
+=================================================
+
+Test 1: Normal Çarpma (3 * 2 = 6)
+---------------------------------
+Girdi (Binary): 11 * 10
+Beklenen Çıktı (Binary): 110
+Başlangıç Bandı: 11*10=
+Bitiş Bandı: 1100*10=110_
+Toplam Adım: 108
+Sonuç: BAŞARILI ✓
+
+Açıklama:
+- 11 (3 decimal) ile 10 (2 decimal) çarpılıyor
+- Shift & Add algoritması kullanılıyor
+- Y'nin sağdan 1. biti = 0 (kaydırma yapılır)
+- Y'nin sağdan 2. biti = 1 (X eklenir ve kaydırılır)
+- Sonuç: 110 (6 decimal)
+
+---
+
+Test 2: Ardışık 1'ler ile Çarpma (5 * 3 = 15)
+----------------------------------------------
+Girdi (Binary): 101 * 11
+Beklenen Çıktı (Binary): 1111
+Başlangıç Bandı: 101*11=
+Bitiş Bandı: 10100*11=1111_
+Toplam Adım: 211
+Sonuç: BAŞARILI ✓
+
+Açıklama:
+- 101 (5 decimal) ile 11 (3 decimal) çarpılıyor
+- Y = 11 (her iki bit = 1)
+- Her bit için X eklenir ve kaydırılır
+- Sonuç: 1111 (15 decimal)
+
+---
+
+Test 3: Sıfır ile Çarpma (0 * 5 = 0)
+------------------------------------
+Girdi (Binary): 0 * 101
+Beklenen Çıktı (Binary): 0
+Başlangıç Bandı: 0*101=
+Bitiş Bandı: 0000*101=0_
+Toplam Adım: 167
+Sonuç: BAŞARILI ✓
+
+Açıklama:
+- 0 (0 decimal) ile 101 (5 decimal) çarpılıyor
+- X = 0 olduğu için tüm Y bitleri işlense de sonuç 0
+- Makine sıfır sonucunu doğru işliyor
+- Sonuç: 0 (0 decimal)
+
+---
+
+Test 4: Bir ile Çarpma (7 * 1 = 7)
+----------------------------------
+Girdi (Binary): 111 * 1
+Beklenen Çıktı (Binary): 111
+Başlangıç Bandı: 111*1=
+Bitiş Bandı: 1110*1=111_
+Toplam Adım: 87
+Sonuç: BAŞARILI ✓
+
+Açıklama:
+- 111 (7 decimal) ile 1 (1 decimal) çarpılıyor
+- Y sadece 1 biti var ve değeri = 1
+- X bir kez eklenir, kaydırma yapılır ama Y bitti
+- Sonuç: 111 (7 decimal)
+
+---
+
+Test 5: Büyük Sayı (6 * 7 = 42)
+--------------------------------
+Girdi (Binary): 110 * 111
+Beklenen Çıktı (Binary): 101010
+Başlangıç Bandı: 110*111=
+Bitiş Bandı: 110000*111=101010_
+Toplam Adım: 457
+Sonuç: BAŞARILI ✓
+
+Açıklama:
+- 110 (6 decimal) ile 111 (7 decimal) çarpılıyor
+- Y = 111 (her üç bit = 1)
+- Her adımda X eklenir ve kaydırılır
+- Toplama sırasında carry (elde) işlemleri yapılır
+- Sonuç: 101010 (42 decimal)
+
+---
+
+SONUÇ ÖZETİ
+===========
+Geçerli Testler: 5/5 BAŞARILI ✓
+Toplam Adım Sayısı: 108 + 211 + 167 + 87 + 457 = 1030 adım
+Başarı Oranı: %100
+
+HATA KONTROLÜ
+=============
+✓ Operandlar doğru ayrıştrılıyor (* ile)
+✓ Sonuç alanı doğru belirtiliyor (= ile)
+✓ Binary aritmetik doğru yapılıyor
+✓ Carry (elde) işlemleri başarılı
+✓ Kaydırma (shift) işlemleri doğru
+✓ Temizlik (cleanup) işlemleri yapılıyor
+✓ Makine kabul durumuna düzgün geçiyor

@@ -1,0 +1,136 @@
+DURUM GEÇİŞ DİYAGRAMI (ASCII Gösterim)
+====================================
+
+                    Başlangıç
+                      |
+                      v
+        ┌─────────────────────────┐
+        │   q0: 1. Rakam          │
+        │   Girdi: 0-9 → q1       │
+        │   Diğer: → q_reject     │
+        └────────┬────────────────┘
+                 │ (Rakam Bulundu)
+                 v
+        ┌─────────────────────────┐
+        │   q1: 2. Rakam          │
+        │   Girdi: 0-9 → q2       │
+        │   Diğer: → q_reject     │
+        └────────┬────────────────┘
+                 │ (Rakam Bulundu)
+                 v
+        ┌─────────────────────────┐
+        │   q2: 1. Harf           │
+        │   Girdi: A-Z → q3       │
+        │   Diğer: → q_reject     │
+        └────────┬────────────────┘
+                 │ (Harf Bulundu)
+                 v
+        ┌─────────────────────────┐
+        │   q3: 2. Harf           │
+        │   Girdi: A-Z → q4       │
+        │   Diğer: → q_reject     │
+        └────────┬────────────────┘
+                 │ (Harf Bulundu)
+                 v
+        ┌─────────────────────────┐
+        │   q4: 3. Rakam          │
+        │   Girdi: 0-9 → q5       │
+        │   Diğer: → q_reject     │
+        └────────┬────────────────┘
+                 │ (Rakam Bulundu)
+                 v
+        ┌─────────────────────────┐
+        │   q5: 4. Rakam          │
+        │   Girdi: 0-9 → q6       │
+        │   Diğer: → q_reject     │
+        └────────┬────────────────┘
+                 │ (Rakam Bulundu)
+                 v
+        ┌─────────────────────────┐
+        │   q6: 5. Rakam          │
+        │   Girdi: 0-9 → q_accept │
+        │   Diğer: → q_reject     │
+        └────────┬────────────────┘
+                 │ (Rakam Bulundu)
+                 v
+        ┌─────────────────────────────┐
+        │   q_accept: KABUL           │
+        │   (_  → Boş, Kabul Et)      │
+        │   (Diğer → q_reject)        │
+        └────────┬─────────────────────┘
+                 │
+                 ├──────────────────────────────────┐
+                 │                                  │
+                 v                                  v
+           [BAŞARILI]                         [BAŞARILI]
+            KABUL ✓                           (Fazladan
+                                              Karakter)
+                                              RED ✗
+             
+          VEYA HERHANGI BİR ADIMDA:
+               (Yanlış Karakter)
+                     │
+                     v
+          ┌─────────────────────┐
+          │   q_reject: RED     │
+          │   BAŞARISSIZ        │
+          │   Geçersiz Format   │
+          └─────────────────────┘
+                     │
+                     v
+                [BAŞARISSIZ]
+                  RED ✗
+
+---
+
+DETAYLI DURUM GEÇIŞ TABLOSU
+===========================
+
+Position: N(1)  N(2)  L(1)  L(2)  N(3)  N(4)  N(5)
+State:    q0    q1    q2    q3    q4    q5    q6
+Input:    0-9   0-9   A-Z   A-Z   0-9   0-9   0-9
+Output:   q1    q2    q3    q4    q5    q6   q_accept
+
+Hata Durumları:
+- q0 ile harf/özel karakter → q_reject
+- q1 ile harf/özel karakter → q_reject
+- q2 ile rakam/özel karakter → q_reject
+- q3 ile rakam/özel karakter → q_reject
+- q4 ile harf/özel karakter → q_reject
+- q5 ile harf/özel karakter → q_reject
+- q6 ile harf/özel karakter → q_reject
+- q_accept ile herhangi rakam/harf → q_reject
+- q_accept ile _ (boş) → KABUL
+
+---
+
+ÖRNEK TESKERİNİN DETAYLI İZLEMESİ
+==================================
+
+GEÇERLI: 55AB123
+
+Adım   Durum     Bant Konumu    Okunan    Sonraki    Neden
+────────────────────────────────────────────────────────
+1      q0        [5]5AB123      '5'       q1         Rakam ✓
+2      q1        5[5]AB123      '5'       q2         Rakam ✓
+3      q2        55[A]B123      'A'       q3         Harf ✓
+4      q3        55A[B]123      'B'       q4         Harf ✓
+5      q4        55AB[1]23      '1'       q5         Rakam ✓
+6      q5        55AB1[2]3      '2'       q6         Rakam ✓
+7      q6        55AB12[3]      '3'       q_accept   Rakam ✓
+8      q_accept  55AB123[_]     '_'       KABUL      Bitti
+
+SONUÇ: ✓ KABUL
+
+---
+
+GEÇERSİZ: 34A1234
+
+Adım   Durum     Bant Konumu    Okunan    Sonraki    Neden
+────────────────────────────────────────────────────────
+1      q0        [3]4A1234      '3'       q1         Rakam ✓
+2      q1        3[4]A1234      '4'       q2         Rakam ✓
+3      q2        34[A]1234      'A'       q3         Harf ✓
+4      q3        34A[1]234      '1'       q_reject   Rakam beklendi ✗
+
+SONUÇ: ✗ RED

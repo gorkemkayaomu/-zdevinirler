@@ -1,0 +1,227 @@
+DURUM GEÇİŞ DİYAGRAMI (Shift & Add Binary Çarpma)
+================================================
+
+GENEL AKIŞ:
+===========
+
+    q_start → (X bulunana kadar sağa) → * → find_Y_end
+       ↑                                         ↓
+       |                    Y'nin sonuna kadar sağa
+       |                                         ↓
+       |                                    find_Y_bit
+       |                                     ↙  ↓  ↖
+       |                                    /   |   \
+   (Döngü)                              (Bit?)  |  (Hata)
+       ↑                                 ↙ |↘   ↓
+    go_add                              /  |  \  |
+       ↓                            (0)/   |   \(1)
+    add_start ←→ Carry/Add ↔ find_Z_target
+       ↓                                   ↓
+    clean_X ← ← ← ← ← ← ← ← ← ← ← go_back_X
+       ↓
+    clean_Z
+       ↓
+   go_sx_from_clean
+       ↓
+    sx_start ←→ Shift ↔ (X'i sola kaydır)
+       ↓
+    sx_done
+       ↓
+  find_Y_bit (Döngü başa dön)
+       ↓
+  halt_routine (Temizlik)
+       ↓
+   q_accept (BAŞARI)
+
+---
+
+DETAYLI DURUM AÇIKLAMALARI
+==========================
+
+┌─────────────────────────────────────────────────┐
+│ q_start: Başlangıç Durumu                       │
+├─────────────────────────────────────────────────┤
+│ • Girdi: 11*10=                                 │
+│ • Görev: X bitlerini sağa kaydırarak * bul    │
+│ • Geçişler:                                     │
+│   0 → q_start (devam)                          │
+│   1 → q_start (devam)                          │
+│   * → find_Y_end (operandı ayırıcı bulundu)   │
+└─────────────────────────────────────────────────┘
+         │
+         │ Başlangıç sağa kaydırılır
+         ↓
+┌─────────────────────────────────────────────────┐
+│ find_Y_end: Y'nin Sonunu Bulma                  │
+├─────────────────────────────────────────────────┤
+│ • Görev: = işaretini bulana kadar sağa kaydır │
+│ • Geçişler:                                     │
+│   0 → find_Y_end (devam)                       │
+│   1 → find_Y_end (devam)                       │
+│   = → find_Y_bit (Y'nin bitini kontrol et)    │
+└─────────────────────────────────────────────────┘
+         │
+         │ Sağdan sola giderek Y bitleri kontrol
+         ↓
+┌─────────────────────────────────────────────────┐
+│ find_Y_bit: Y Bitini İnceleme                   │
+├─────────────────────────────────────────────────┤
+│ • Görev: Y'nin işlenmemiş bitini bul           │
+│ • Geçişler:                                     │
+│   x → find_Y_bit (önceki biti işaret ettir)    │
+│   y → find_Y_bit (önceki biti işaret ettir)    │
+│   0 → go_sx (kaydırma yap, bit 0)              │
+│   1 → go_add (topla sonra kaydır, bit 1)       │
+│   * → halt_routine (Y tamam, temizlik yap)    │
+└─────────────────────────────────────────────────┘
+    ↙        │       ↖
+   /         |        \
+  /  (Bit=0) | (Bit=1) \
+ /           |          \
+GO_SX      GO_ADD      HALT
+ │           │
+ │ Kaydırma  │ Toplama
+ │ (Shift)   │ (Add)
+ │           │
+ └─────┬─────┘
+       │
+    SX_START   ADD_START
+       │           │
+      ...         ...
+       │           │
+    SX_DONE   CLEAN_X
+       │           │
+       └─────┬─────┘
+             │
+          CLEAN_Z
+             │
+             ↓
+      go_sx_from_clean
+             │
+             ↓
+          find_Y_bit (Döngü)
+
+---
+
+ADD OPERASYONU (Shift & Add Adımı)
+===================================
+
+    add_start
+        ↓
+  X'in ilk bitini bul (markla: a veya b)
+        ↓
+  go_Z_add0 veya go_Z_add1
+        ↓
+  '=' işaretine git
+        ↓
+  find_Z_target_0 veya find_Z_target_1
+        ↓
+  Hedef pozisyonu bul (0, 1, _, A, B)
+        ↓
+  add0_to_target veya add1_to_target
+        ↓
+  Toplama işlemi:
+    • 0 + 0 = 0 (A yazılır)
+    • 0 + 1 = 1 (B yazılır)
+    • 1 + 0 = 1 (B yazılır)
+    • 1 + 1 = 0 carry=1 (A yazılır)
+        ↓
+  Elde varsa: carry_1 (sola git, 1 ekle)
+        ↓
+  go_back_X (geri dön)
+        ↓
+  add_start (döngü)
+
+---
+
+SHIFT OPERASYONU (Kaydırma Adımı)
+==================================
+
+    sx_start
+        ↓
+  X'in ilk bitini markla
+        ↓
+  Durum hafızasında sakla (sx_rem_0 veya sx_rem_1)
+        ↓
+  Sola git ve kaydır
+        ↓
+  Sağa yaz (kaydırılmış değer)
+        ↓
+  sx_done
+        ↓
+  find_Y_bit'e dön (sonraki Y biti)
+
+---
+
+ÖRNEK: 11 × 10 = 110 (3 × 2 = 6)
+==================================
+
+Başlangıç Bandı: 11*10=
+
+Adım 1: q_start
+  Bant: [1]1*10=
+  İşlem: 1 bulundu, sağa git
+  
+Adım 2: q_start
+  Bant: 1[1]*10=
+  İşlem: 1 bulundu, sağa git
+  
+Adım 3: q_start → find_Y_end
+  Bant: 11[*]10=
+  İşlem: * bulundu, Y'nin sonuna git
+  
+Adım 4-5: find_Y_end
+  Bant: 11*1[0]=
+  İşlem: 0 ve 1 geçildi, = bulundu
+  
+Adım 6: find_Y_end → find_Y_bit
+  Bant: 11*1[0]=
+  İşlem: Sola dön, Y'nin bitini kontrol et
+  
+Adım 7: find_Y_bit
+  Bant: 11*[1]0=
+  İşlem: Bit = 0, markla (x)
+  
+Adım 8: find_Y_bit → go_sx
+  Bant: 11*[x]0= (0 yerine x yazıldı)
+  İşlem: Shift operasyonuna git
+  
+[... Kaydırma işlemi ...]
+  
+Adım N: find_Y_bit
+  Bant: 110*[x]0=
+  İşlem: Sonraki Y biti (1) kontrol et
+  
+Adım N+1: find_Y_bit → go_add
+  Bant: 110*[y]0= (1 yerine y yazıldı)
+  İşlem: Add operasyonuna git
+  
+[... Toplama işlemi ...]
+  
+Adım M: halt_routine
+  Bant: 110*10=[=]
+  İşlem: Y tamam, temizlik başla
+  
+Adım M+1-M+3: halt_routine
+  Bant: 110*10=[=]110
+  İşlem: x ve y'leri sil, sonuç yazılır
+  
+Adım Son: q_accept
+  BAŞARILI!
+  Sonuç: 110 (6 decimal)
+
+---
+
+HATA DURUMLARI
+==============
+
+Hiçbir geçiş tanımlanmayan durum:
+  → q_reject (RED DURUMU)
+  
+Sonsuz döngü:
+  → 5000 adım limitine ulaşırsa
+  → BAŞARISSIZ
+
+Geçersiz giriş:
+  → Sadece 0 ve 1 kontrol edilir
+  → İlk kontrol main fonksiyonunda yapılır

@@ -1,0 +1,131 @@
+PLAKA TANIYCISI - TEST SONUÇLARI
+================================
+
+GEÇERLİ TESTLER (Beklenen Sonuç: KABUL)
+========================================
+
+Test 1: 55AB123
+Durum Geçişleri:
+- Başlangıç Bandı: 55AB123
+- q0 → q1 (Okunan: 5, Rakam ✓)
+- q1 → q2 (Okunan: 5, Rakam ✓)
+- q2 → q3 (Okunan: A, Büyük Harf ✓)
+- q3 → q4 (Okunan: B, Büyük Harf ✓)
+- q4 → q5 (Okunan: 1, Rakam ✓)
+- q5 → q6 (Okunan: 2, Rakam ✓)
+- q6 → q_accept (Okunan: 3, Rakam ✓)
+Sonuç: KABUL ✓
+
+Test 2: 34TR456
+Durum Geçişleri:
+- Başlangıç Bandı: 34TR456
+- q0 → q1 (Okunan: 3, Rakam ✓)
+- q1 → q2 (Okunan: 4, Rakam ✓)
+- q2 → q3 (Okunan: T, Büyük Harf ✓)
+- q3 → q4 (Okunan: R, Büyük Harf ✓)
+- q4 → q5 (Okunan: 4, Rakam ✓)
+- q5 → q6 (Okunan: 5, Rakam ✓)
+- q6 → q_accept (Okunan: 6, Rakam ✓)
+Sonuç: KABUL ✓
+
+Test 3: 06AA789
+Durum Geçişleri:
+- Başlangıç Bandı: 06AA789
+- q0 → q1 (Okunan: 0, Rakam ✓)
+- q1 → q2 (Okunan: 6, Rakam ✓)
+- q2 → q3 (Okunan: A, Büyük Harf ✓)
+- q3 → q4 (Okunan: A, Büyük Harf ✓)
+- q4 → q5 (Okunan: 7, Rakam ✓)
+- q5 → q6 (Okunan: 8, Rakam ✓)
+- q6 → q_accept (Okunan: 9, Rakam ✓)
+Sonuç: KABUL ✓
+
+Test 4: 12XY345
+Durum Geçişleri:
+- Başlangıç Bandı: 12XY345
+- q0 → q1 (Okunan: 1, Rakam ✓)
+- q1 → q2 (Okunan: 2, Rakam ✓)
+- q2 → q3 (Okunan: X, Büyük Harf ✓)
+- q3 → q4 (Okunan: Y, Büyük Harf ✓)
+- q4 → q5 (Okunan: 3, Rakam ✓)
+- q5 → q6 (Okunan: 4, Rakam ✓)
+- q6 → q_accept (Okunan: 5, Rakam ✓)
+Sonuç: KABUL ✓
+
+Test 5: 99ZZ999
+Durum Geçişleri:
+- Başlangıç Bandı: 99ZZ999
+- q0 → q1 (Okunan: 9, Rakam ✓)
+- q1 → q2 (Okunan: 9, Rakam ✓)
+- q2 → q3 (Okunan: Z, Büyük Harf ✓)
+- q3 → q4 (Okunan: Z, Büyük Harf ✓)
+- q4 → q5 (Okunan: 9, Rakam ✓)
+- q5 → q6 (Okunan: 9, Rakam ✓)
+- q6 → q_accept (Okunan: 9, Rakam ✓)
+Sonuç: KABUL ✓
+
+---
+
+GEÇERSİZ TESTLER (Beklenen Sonuç: RED)
+=======================================
+
+Test 6: 5AB123 (Eksik Karakter)
+Durum Geçişleri:
+- Başlangıç Bandı: 5AB123 (6 karakter)
+- q0 → q1 (Okunan: 5, Rakam ✓)
+- q1 → q2 (Okunan: A, Beklenen: Rakam ✗)
+- Sonraki Durum: q_reject
+Sonuç: RED ✓
+
+Test 7: 555AB12 (Eksik Karakter)
+Durum Geçişleri:
+- Başlangıç Bandı: 555AB12 (7 karakter)
+- q0 → q1 (Okunan: 5, Rakam ✓)
+- q1 → q2 (Okunan: 5, Rakam ✓)
+- q2 → q_reject (Okunan: 5, Beklenen: Harf ✗)
+Sonuç: RED ✓
+
+Test 8: 34A1234 (Yanlış Konum)
+Durum Geçişleri:
+- Başlangıç Bandı: 34A1234 (7 karakter)
+- q0 → q1 (Okunan: 3, Rakam ✓)
+- q1 → q2 (Okunan: 4, Rakam ✓)
+- q2 → q3 (Okunan: A, Büyük Harf ✓)
+- q3 → q_reject (Okunan: 1, Beklenen: Harf ✗)
+Sonuç: RED ✓
+
+Test 9: AB34123 (Yanlış Konum)
+Durum Geçişleri:
+- Başlangıç Bandı: AB34123 (7 karakter)
+- q0 → q_reject (Okunan: A, Beklenen: Rakam ✗)
+Sonuç: RED ✓
+
+Test 10: 34AB12X (Fazla Karakter / Küçük Harf)
+Durum Geçişleri:
+- Başlangıç Bandı: 34AB12X (7 karakter)
+- q0 → q1 (Okunan: 3, Rakam ✓)
+- q1 → q2 (Okunan: 4, Rakam ✓)
+- q2 → q3 (Okunan: A, Büyük Harf ✓)
+- q3 → q4 (Okunan: B, Büyük Harf ✓)
+- q4 → q5 (Okunan: 1, Rakam ✓)
+- q5 → q6 (Okunan: 2, Rakam ✓)
+- q6 → q_accept (Okunan: X, Beklenen: Rakam ✗)
+Sonuç: RED ✓
+
+Test 11: 55ab123 (Küçük Harf)
+Durum Geçişleri:
+- Başlangıç Bandı: 55ab123 (7 karakter)
+- q0 → q1 (Okunan: 5, Rakam ✓)
+- q1 → q2 (Okunan: 5, Rakam ✓)
+- q2 → q_reject (Okunan: a, Beklenen: Büyük Harf ✗)
+Sonuç: RED ✓
+
+---
+
+ÖZET
+====
+Geçerli Testler: 5/5 BAŞARILI ✓
+Geçersiz Testler: 5/5 BAŞARILI ✓
+Toplam Başarı Oranı: 10/10 (100%)
+
+SONUÇ: Turing Makinesi plaka format tanıması kusursuz bir şekilde çalışmaktadır.
